@@ -1,33 +1,36 @@
 /*
- * $Id: turtles.c,v 1.2 2012/04/04 04:57:15 urs Exp $
+ * $Id: turtles.c,v 1.3 2012/04/04 04:59:08 urs Exp $
  *
  * Solve the turtle game.
  */
 
 #include <stdio.h>
 
+static void no(int idx);
+static void rotate(int idx);
+
 typedef struct {
 	int no;
 	int p[4];
 } CARD;
 
-CARD crd[9] = {
-	0, -1, -2, +3, +4,
-	1, -1, -2, +3, +4,
-	2, -1, -4, +3, +4,
-	3, -1, -4, +3, +2,
-	4, -3, -1, +2, +4,
-	5, -3, -2, +1, +2,
-	6, -2, -3, +1, +4,
-	7, -1, -3, +4, +2,
-	8, -3, -4, +1, +2,
+static const CARD crd[9] = {
+	{ 0, { -1, -2, +3, +4 } },
+	{ 1, { -1, -2, +3, +4 } },
+	{ 2, { -1, -4, +3, +4 } },
+	{ 3, { -1, -4, +3, +2 } },
+	{ 4, { -3, -1, +2, +4 } },
+	{ 5, { -3, -2, +1, +2 } },
+	{ 6, { -2, -3, +1, +4 } },
+	{ 7, { -1, -3, +4, +2 } },
+	{ 8, { -3, -4, +1, +2 } },
 };
 
-CARD c[9];
-int  r[9];
-int used[9];
+static CARD c[9];
+static int  r[9];
+static int used[9];
 
-int debug = 0;
+static int debug = 0;
 
 int main(int argc, char **argv)
 {
@@ -39,7 +42,7 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-no(int idx)
+static void no(int idx)
 {
 	int i, j, k;
 
@@ -83,7 +86,7 @@ no(int idx)
 	}
 }
 
-rotate(int idx)
+static void rotate(int idx)
 {
 	int aux;
 
