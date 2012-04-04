@@ -1,5 +1,5 @@
 /*
- * $Id: turtles.c,v 1.5 2012/04/04 05:01:11 urs Exp $
+ * $Id: turtles.c,v 1.6 2012/04/04 05:02:03 urs Exp $
  *
  * Solve the turtle game.
  */
@@ -8,6 +8,7 @@
 
 static void place_card(int idx);
 static void rotate(int idx);
+static int  check(int idx);
 static void print(int idx, int brk_flag);
 
 typedef struct {
@@ -56,22 +57,11 @@ static void place_card(int idx)
 		for (j = 0; j < 4; j++, rotate(idx)) {
 			r[idx] = j;
 
-			/* Check for match with the upper card. */
-			if (idx >= 3) {
-				if (c[idx].p[1] + c[idx - 3].p[3] != 0) {
-					if (debug)
-						print(idx, 1);
-					continue;
-				}
-			}
-
-			/* Check for match with the left card. */
-			if (idx % 3 != 0) {
-				if (c[idx].p[2] + c[idx - 1].p[0] != 0) {
-					if (debug)
-						print(idx, 1);
-					continue;
-				}
+			/* Check whether this card matches. */
+			if (!check(idx)) {
+				if (debug)
+					print(idx, 1);
+				continue;
 			}
 
 			/* Try next card or print the solution found. */
@@ -93,6 +83,25 @@ static void rotate(int idx)
 	c[idx].p[1] = c[idx].p[2];
 	c[idx].p[2] = c[idx].p[3];
 	c[idx].p[3] = tmp;
+}
+
+static int check(int idx)
+{
+	/* Check for match with the upper card. */
+	if (idx >= 3) {
+		int above = idx - 3;
+		if (c[idx].p[1] + c[above].p[3] != 0)
+			return 0;
+	}
+
+	/* Check for match with the left card. */
+	if (idx % 3 != 0) {
+		int left = idx - 1;
+		if (c[idx].p[2] + c[left].p[0] != 0)
+			return 0;
+	}
+
+	return 1;
 }
 
 static void print(int idx, int brk_flag)
