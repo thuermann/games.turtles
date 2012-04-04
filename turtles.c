@@ -1,5 +1,5 @@
 /*
- * $Id: turtles.c,v 1.4 2012/04/04 05:01:01 urs Exp $
+ * $Id: turtles.c,v 1.5 2012/04/04 05:01:11 urs Exp $
  *
  * Solve the turtle game.
  */
@@ -8,6 +8,7 @@
 
 static void place_card(int idx);
 static void rotate(int idx);
+static void print(int idx, int brk_flag);
 
 typedef struct {
 	int no;
@@ -44,7 +45,7 @@ int main(int argc, char **argv)
 
 static void place_card(int idx)
 {
-	int i, j, k;
+	int i, j;
 
 	for (i = 0; i < 9; i++) {
 		if (used[i])
@@ -58,11 +59,8 @@ static void place_card(int idx)
 			/* Check for match with the upper card. */
 			if (idx >= 3) {
 				if (c[idx].p[1] + c[idx - 3].p[3] != 0) {
-					if (debug) {
-						for (k = 0; k <= idx; k++)
-							printf("(%d,%d) ", c[k].no, r[k]);
-						puts(": break");
-					}
+					if (debug)
+						print(idx, 1);
 					continue;
 				}
 			}
@@ -70,11 +68,8 @@ static void place_card(int idx)
 			/* Check for match with the left card. */
 			if (idx % 3 != 0) {
 				if (c[idx].p[2] + c[idx - 1].p[0] != 0) {
-					if (debug) {
-						for (k = 0; k <= idx; k++)
-							printf("(%d,%d) ", c[k].no, r[k]);
-						puts(": break");
-					}
+					if (debug)
+						print(idx, 1);
 					continue;
 				}
 			}
@@ -82,11 +77,8 @@ static void place_card(int idx)
 			/* Try next card or print the solution found. */
 			if (idx < 8)
 				place_card(idx + 1);
-			else {
-				for (k = 0; k < 9; k++)
-					printf("(%d,%d) ", c[k].no, r[k]);
-				putchar('\n');
-			}
+			else
+				print(idx, 0);
 		}
 		used[i] = 0;
 	}
@@ -101,4 +93,16 @@ static void rotate(int idx)
 	c[idx].p[1] = c[idx].p[2];
 	c[idx].p[2] = c[idx].p[3];
 	c[idx].p[3] = tmp;
+}
+
+static void print(int idx, int brk_flag)
+{
+	int k;
+
+	for (k = 0; k <= idx; k++)
+		printf("(%d,%d) ", c[k].no, r[k]);
+	if (brk_flag)
+		puts(": break");
+	else
+		putchar('\n');
 }
