@@ -1,5 +1,5 @@
 /*
- * $Id: turtles.c,v 1.7 2012/04/04 05:04:44 urs Exp $
+ * $Id: turtles.c,v 1.8 2012/04/23 14:03:01 urs Exp $
  *
  * Solve the turtle game.
  */
@@ -13,19 +13,19 @@ static void print(int idx, int brk_flag);
 
 typedef struct {
 	int no;
-	int up, down, left, right;
+	int p[4];
 } CARD;
 
 static const CARD crd[9] = {
-	{ 0, -2, +4, +3, -1 },
-	{ 1, -2, +4, +3, -1 },
-	{ 2, -4, +4, +3, -1 },
-	{ 3, -4, +2, +3, -1 },
-	{ 4, -1, +4, +2, -3 },
-	{ 5, -2, +2, +1, -3 },
-	{ 6, -3, +4, +1, -2 },
-	{ 7, -3, +2, +4, -1 },
-	{ 8, -4, +2, +1, -3 },
+	{ 0, { -1, -2, +3, +4 } },
+	{ 1, { -1, -2, +3, +4 } },
+	{ 2, { -1, -4, +3, +4 } },
+	{ 3, { -1, -4, +3, +2 } },
+	{ 4, { -3, -1, +2, +4 } },
+	{ 5, { -3, -2, +1, +2 } },
+	{ 6, { -2, -3, +1, +4 } },
+	{ 7, { -1, -3, +4, +2 } },
+	{ 8, { -3, -4, +1, +2 } },
 };
 
 static CARD c[9];
@@ -78,11 +78,11 @@ static void rotate(int idx)
 {
 	int tmp;
 
-	tmp          = c[idx].right;
-	c[idx].right = c[idx].up;
-	c[idx].up    = c[idx].left;
-	c[idx].left  = c[idx].down;
-	c[idx].down  = tmp;
+	tmp = c[idx].p[0];
+	c[idx].p[0] = c[idx].p[1];
+	c[idx].p[1] = c[idx].p[2];
+	c[idx].p[2] = c[idx].p[3];
+	c[idx].p[3] = tmp;
 }
 
 static int check(int idx)
@@ -90,14 +90,14 @@ static int check(int idx)
 	/* Check for match with the upper card. */
 	if (idx >= 3) {
 		int above = idx - 3;
-		if (c[idx].up + c[above].down != 0)
+		if (c[idx].p[1] + c[above].p[3] != 0)
 			return 0;
 	}
 
 	/* Check for match with the left card. */
 	if (idx % 3 != 0) {
 		int left = idx - 1;
-		if (c[idx].left + c[left].right != 0)
+		if (c[idx].p[2] + c[left].p[0] != 0)
 			return 0;
 	}
 
