@@ -1,5 +1,5 @@
 /*
- * $Id: turtles.c,v 1.8 2012/04/23 14:03:01 urs Exp $
+ * $Id: turtles.c,v 1.9 2012/04/23 14:03:11 urs Exp $
  *
  * Solve the turtle game.
  */
@@ -13,10 +13,10 @@ static void print(int idx, int brk_flag);
 
 typedef struct {
 	int no;
-	int p[4];
+	int mark[4];
 } CARD;
 
-static const CARD crd[9] = {
+static const CARD card[9] = {
 	{ 0, { -1, -2, +3, +4 } },
 	{ 1, { -1, -2, +3, +4 } },
 	{ 2, { -1, -4, +3, +4 } },
@@ -46,16 +46,16 @@ int main(int argc, char **argv)
 
 static void place_card(int idx)
 {
-	int i, j;
+	int no, rot;
 
-	for (i = 0; i < 9; i++) {
-		if (used[i])
+	for (no = 0; no < 9; no++) {
+		if (used[no])
 			continue;
-		used[i] = 1;
+		used[no] = 1;
 
-		c[idx] = crd[i];
-		for (j = 0; j < 4; j++, rotate(idx)) {
-			r[idx] = j;
+		c[idx] = card[no];
+		for (rot = 0; rot < 4; rot++, rotate(idx)) {
+			r[idx] = rot;
 
 			/* Check whether this card matches. */
 			if (!check(idx)) {
@@ -70,7 +70,7 @@ static void place_card(int idx)
 			else
 				print(idx, 0);
 		}
-		used[i] = 0;
+		used[no] = 0;
 	}
 }
 
@@ -78,11 +78,11 @@ static void rotate(int idx)
 {
 	int tmp;
 
-	tmp = c[idx].p[0];
-	c[idx].p[0] = c[idx].p[1];
-	c[idx].p[1] = c[idx].p[2];
-	c[idx].p[2] = c[idx].p[3];
-	c[idx].p[3] = tmp;
+	tmp = c[idx].mark[0];
+	c[idx].mark[0] = c[idx].mark[1];
+	c[idx].mark[1] = c[idx].mark[2];
+	c[idx].mark[2] = c[idx].mark[3];
+	c[idx].mark[3] = tmp;
 }
 
 static int check(int idx)
@@ -90,14 +90,14 @@ static int check(int idx)
 	/* Check for match with the upper card. */
 	if (idx >= 3) {
 		int above = idx - 3;
-		if (c[idx].p[1] + c[above].p[3] != 0)
+		if (c[idx].mark[1] + c[above].mark[3] != 0)
 			return 0;
 	}
 
 	/* Check for match with the left card. */
 	if (idx % 3 != 0) {
 		int left = idx - 1;
-		if (c[idx].p[2] + c[left].p[0] != 0)
+		if (c[idx].mark[2] + c[left].mark[0] != 0)
 			return 0;
 	}
 
