@@ -1,10 +1,17 @@
 /*
- * $Id: turtles.c,v 1.11 2013/08/14 22:12:35 urs Exp $
+ * $Id: turtles.c,v 1.12 2013/08/14 22:13:28 urs Exp $
  *
  * Solve the turtle game.
  */
 
+#include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+
+static void usage(const char *name)
+{
+	fprintf(stderr, "Usage: %s [-d]\n", name);
+}
 
 static void place_card(int idx);
 static int  check(int idx);
@@ -38,8 +45,12 @@ static int debug = 0;
 
 int main(int argc, char **argv)
 {
-	if (argc > 1)
+	if (argc == 2 && strcmp(argv[1], "-d") == 0) {
 		debug = 1;
+	} else if (argc != 1) {
+		usage(argv[0]);
+		exit(1);
+	}
 
 	place_card(0);
 
