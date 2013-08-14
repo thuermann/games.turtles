@@ -1,5 +1,5 @@
 /*
- * $Id: turtles.c,v 1.10 2012/04/23 14:03:21 urs Exp $
+ * $Id: turtles.c,v 1.11 2013/08/14 22:12:35 urs Exp $
  *
  * Solve the turtle game.
  */
@@ -51,6 +51,14 @@ static void place_card(int idx)
 	int no, rot;
 
 	for (no = 0; no < 9; no++) {
+
+		/* Eliminate duplicate solutions by requiring the whole
+		 * field to be rotated such that the lowest-numbered card
+		 * of the 4 corners is located in the upper left corner.
+		 */
+		if ((idx == 2 || idx == 6 || idx == 8) && no < field[0].no)
+			continue;
+
 		if (used[no])
 			continue;
 		used[no] = 1;
